@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="icon" href="/static/images/favicon.png"/>
+    <title>DRUGStore</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/stylesheet.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/custom.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4 col-xs-4" id="logo">
+                <a href="{{ url_for('mhome') }}" class="logo-text">
+                    Pharmacy<span style="color:#39BAF0; font-size:40px">Pharmacy</span>
+                </a>
+            </div>
+            <div class="col-md-5 col-sm-12 col-xs-12" style="display:none" id="navbar_hide">
+                <nav role="navigation" class="navbar navbar-inverse">
+                    <a href="{{ url_for('mhome') }}" style="float: left" class="logo-text">
+                        DRUG<span style="color:#39BAF0; font-size:40px">STORE</span>
+                    </a>
+                    <div id="nav">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar" style="background: #8EBE08; border: none; margin-right: 0">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div class="col-md-4 col-md-offset-4 col-sm-offset-2 col-sm-6 col-xs-12">
+                <div id="top_right">
+                    <div id="cart">
+                        <div class="text">
+                            <div class="img">
+                                <a href="{{ url_for('cart') }}"><img class="img-responsive" src="/static/images/cart.png" alt="" title="" width="26" height="27" /></a>
+                            </div>
+                            <span>Корзина:</span>
+                            <span class="cart_total">BYN. {{ '%0.2f'| format(subtotal|float) }}</span>
+                            <span class="cart_items">({{ len_items }} Штук)</span>
+                            <div class="col-md-6 col-xs-6 wd_auto">
+                                <div class="left">
+                                    <div class="login">
+                                        <a class="btn btn-default reg_button" href="{{ url_for('cart') }}">Корзина</a>
+                                        <a class="btn btn-default reg_button" href="{{ url_for('checkout') }}">Заказ</a>
+                                        <div class="dropdown btn-group">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> {{ session['person'] }}
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+
+                                                <li><a href="{{ url_for('updatepassword') }}">Обновить пароль</a></li>
+                                                <li><a href="{{ url_for('logout') }}">Выйти</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="bottom_right">
+                        <div class="row">
+                            <div class="dropdown-bn wd-33 col-md-6 remove_PL col-xs-6">
+                                <div class="row">
+                                    <div class="pl-0 col-md-6 col-xs-6"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} text-center">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <strong>{{ message }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+        <div class="container checkout">
+            <div class="breadcrumbs">
+                <a href="{{ url_for('mhome') }}"><i class="fa fa-home"></i></a>
+                <a href="{{ url_for('checkout') }}">Заказ</a>
+            </div>
+            <h2 class="text-center text-uppercase text-bold">checkout</h2>
+            <hr class="small-line">
+            <div id="accordion" class="panel-group margin-top">
+                <form action="{{ url_for('checkout') }}" method="POST">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse" href="#collapse-payment-address"> <i class="fa fa-caret-down"></i></a></h4>
+                        </div>
+                        <div class="panel-collapse collapse in" id="collapse-payment-address" style="height: auto;">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <fieldset id="account">
+                                            <legend>Персональная информация</legend>
+                                            <div style="display: none;" class="form-group">
+                                                <label class="control-label">Тип Клиента</label>
+                                                <div class="radio">
+                                                    <label>
+                                                        <input type="radio" checked="checked" value="1" name="customer_group_id">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group required">
+                                                <label for="input-payment-firstname" class="control-label">Имя</label>
+                                                <input type="text" class="form-control" id="input-payment-firstname" placeholder="Имя" value="" name="firstname">
+                                            </div>
+                                            <div class="form-group required">
+                                                <label for="input-payment-lastname" class="control-label">Фамилия</label>
+                                                <input type="text" class="form-control" id="input-payment-lastname" placeholder="Фамилия" value="" name="lastname">
+                                            </div>
+                                            <div class="form-group required">
+                                                <label for="input-payment-email" class="control-label">E-Mail</label>
+                                                <input type="text" class="form-control" id="input-payment-email" placeholder="E-Mail" value="" name="email">
+                                            </div>
+                                            <div class="form-group required">
+                                                <label for="input-payment-telephone" class="control-label">Телефон</label>
+                                                <input type="number" class="form-control" id="input-payment-telephone" placeholder="Телефон" value="" name="telephone">
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <fieldset id="address" class="required">
+                                            <legend>Адрес</legend>
+                                            <div class="form-group required">
+                                                <label for="input-payment-address" class="control-label">Адрес</label>
+                                                <input type="text" class="form-control" id="input-payment-address" placeholder="Адрес" value="" name="address">
+                                            </div>
+                                            <div class="form-group required">
+                                                <label for="input-payment-city" class="control-label">Город</label>
+                                                <input type="text" class="form-control" id="input-payment-city" placeholder="Город" value="" name="city">
+                                            </div>
+                                            <div class="form-group required">
+                                                <label for="input-payment-postcode" class="control-label">Почтовый индекс</label>
+                                                <input type="number" class="form-control" id="input-payment-postcode" placeholder="Post Code" value="" name="postcode">
+                                            </div>
+                                            <div class="form-group required">
+                                                <label for="input-payment-country" class="control-label">Страна</label>
+                                                <select class="form-control" id="input-payment-country" name="country_id">
+                                                    <option value=""> --- Пожалуйста выберите --- </option>
+                                                    <option value="1">Беларусь</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group required">
+                                                <label for="input-payment-zone" class="control-label">Область</label>
+                                                <select class="form-control" id="input-payment-zone" name="zone_id">
+                                                    <option value=""> --- Пожалуйста выберите --- </option>
+                                                    <option value="3514">Минск</option>
+                                                </select>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+
+                                <div class="buttons clearfix">
+                                    <div class="pull-right">
+                                        <input type="checkbox" required value="1" name="agree" style="vertical-align: text-bottom"> Я согласен с <a class="agree" href="#"><b>политикой конфиденциальности</b></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse" href="#collapse-payment-method" aria-expanded="true">Метод оплаты <i class="fa fa-caret-down"></i></a></h4>
+                        </div>
+                        <div id="collapse-payment-method" class="panel-collapse collapse in" aria-expanded="true" style="">
+                            <div class="panel-body">
+                                <p><strong>Оплата доставки</strong></p>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" checked="checked" value="flat.flat" name="shipping_method"> Стоимость доставки - BYN 6.00
+                                    </label>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="panel-body">
+                                        <p>Выберите метод оплаты.</p>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" required value="cash_on_delivery" name="payment_method"> &nbsp;Наличными
+                                            </label>
+                                            <br>
+                                            <label>
+                                                <input type="radio" value="credit/debit" name="payment_method"> &nbsp;Картой
+                                            </label>
+                                            <br>
+                                            <label>
+                                                <input type="radio" value="net_banking" name="payment_method"> &nbsp;Переводом
+                                            </label>
+                                        </div>
+                                        <div class="buttons">
+                                            <div class="pull-right">
+                                                Я согласен с  <b>Ценой за доставку</b> &nbsp;
+                                                <input type="checkbox" required value="1" name="agree" style="vertical-align: text-bottom">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse" href="#collapse-checkout-confirm" aria-expanded="true"> Подтвердите заказ <i class="fa fa-caret-down"></i></a></h4>
+                        </div>
+                        <div id="collapse-checkout-confirm" class="panel-collapse collapse in" aria-expanded="true" style="">
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <td class="text-left">Название</td>
+                                                <td class="text-left">Производитель</td>
+                                                <td class="text-left">Тип</td>
+                                                <td class="text-left">Категория</td>
+                                                <td class="text-left">Доза</td>
+                                                <td class="text-right">Количество</td>
+                                                <td class="text-right">Цена</td>
+                                                <td class="text-right">Всего</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in items %}
+                                            <tr>
+                                                <td class="text-left"><a href="{{ url_for('singleproduct', pid=item[4], rol=item[6]) }}">{{ item[3] }}</a></td>
+                                                <td class="text-left">{{ item[5] }}</td>
+                                                <td class="text-left">{{ item[7] }}</td>
+                                                <td class="text-left">{{ item[6] }}</td>
+                                                <td class="text-left">{{ item[8] }}</td>
+                                                <td class="text-right">{{ item[9] }}</td>
+                                                <td class="text-right">BYN. {{ item[1] }}</td>
+                                                <td class="text-right">BYN. {{ '%0.2f'| format(item[1]*item[9]|float) }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td class="text-right" colspan="7"><strong>Итого:</strong></td>
+                                                <td class="text-right">BYN {{ '%0.2f'| format(subtotal|float) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-right" colspan="7">Скидка:</td>
+                                                <td class="text-right">BYN {{ '%0.2f'| format(normalc|float) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-right" colspan="7">Скидка:</td>
+                                                <td class="text-right">BYN {{ '%0.2f'| format(specialc|float) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-right" colspan="7">Цена за доставку:</td>
+                                                <td class="text-right">BYN 6.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-right" colspan="7">НДС (20%):</td>
+                                                <td class="text-right">BYN. {{ '%0.2f'| format(subtotal*0.2|float) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-right" colspan="7"><strong>Всего по заказу:</strong></td>
+                                                <td class="text-right">BYN. {{ '%0.2f'| format((subtotal*1.2+60-normalc-specialc)|float)}}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div class="buttons">
+                                    <div class="pull-right">
+                                        <button type="submit" class="btn btn-primary" id="button-confirm" aria-label="Confirm Order">Подтвердить заказ</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer1">
+        <div class="container-fluid footer-background">
+            <div class="row">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2 col-sm-3 col-xs-12 txt-center">
+                            <a href="{{ url_for('mhome') }}">
+                                <span class="logo-text">DRUGSTORE</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a style="display: none" href="javascript:void(0);" class="scrollTop back-to-top" id="back-to-top">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var button = document.getElementById("button-register");
+        if (button) {
+            button.onclick = function() {
+                document.getElementById("collapse-payment-address").classList.toggle("collapse");
+                document.getElementById("collapse-payment-method").classList.toggle("collapse");
+            };
+        } else {
+            console.error("Button with ID 'button-register' not found.");
+        }
+    });
+    </script>
+</body>
+</html>

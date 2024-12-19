@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+<<<<<<< HEAD
+      <module fileurl="file://$PROJECT_DIR$/.idea/PharmEasy-master.iml" filepath="$PROJECT_DIR$/.idea/PharmEasy-master.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/.idea/Mip_project.iml" filepath="$PROJECT_DIR$/.idea/Mip_project.iml" />
+>>>>>>> 08dfa6b ('')
+    </modules>
+  </component>
+</project>

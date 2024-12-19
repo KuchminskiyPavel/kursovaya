@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="icon" href="/static/images/favicon.png"/>
+        <title>MediStore</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+        <link rel="stylesheet" type="text/css" href="/static/css/stylesheet.css"/> 
+        <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
+        <script src="/static/js/jquery.min.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/custom.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-4" id="logo" >
+                    <a href="{{ url_for('mhome') }}" class="logo-text">
+                        DRUG<span style="color:#39BAF0; font-size:40px">Pharmacy</span>
+                    </a>
+                </div>
+                <div class="col-md-5 col-sm-12 col-xs-12" style="display:none " id="navbar_hide" >
+                    <nav  role="navigation" class="navbar navbar-inverse">
+                        <a href="{{ url_for('mhome') }}" style="float: left" class="logo-text">
+                            DRUG<span style="color:#39BAF0; font-size:40px">STORE</span>
+                        </a>
+                        <div id="nav">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar" style="background: #8EBE08; border: none; margin-right: 0">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+
+                        </div>
+                    </nav>
+                </div>
+                <div class="col-md-4 col-md-offset-4 col-sm-offset-2  col-sm-6 col-xs-12" >
+                    <div id="top_right">
+                        <div id="cart">
+                            <div class="text">
+                                <div class="img">
+                                    <a href="{{ url_for('cart') }}"> <img class="img-responsive" src="/static/images/cart.png" alt="" title="" width="26" height="27" /></a>
+                                </div><span>Корзина:</span><span class="cart_total">BYN {{ '%0.2f'| format(subtotal|float) }}</span><span class="cart_items">({{ len_items }} шт)</span>
+                                <div class="col-md-6 col-xs-6 wd_auto">
+                                    <div class="left">
+                                        <div class="login">
+                                            <a class="btn btn-default reg_button" href="{{ url_for('cart') }}">Корзина</a>
+                                            <a class="btn btn-default reg_button" href="{{ url_for('checkout') }}">Заказ</a>
+                                            <div class="dropdown btn-group">
+                                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Hi {{ session['person'] }} 
+                                                    <span class="caret"></span></button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="{{ url_for('ohistory', bid=buid ) }}">История заказов</a></li>
+                                                    <li><a href="{{ url_for('updatepassword') }}">Изменить пароль</a></li>
+                                                    <li><a href="{{ url_for('logout') }}">Выйти</a></li>
+
+                                                </ul>
+                                            </div>
+                                        </div>      
+                                            
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        <div id="bottom_right">
+                            <div class="row">
+
+                                <div class="dropdown-bn wd-33 col-md-6 remove_PL col-xs-6">
+                                    <div class="row">
+                                        <div class=" pl-0 col-md-6 col-xs-6">
+
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="container" >
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                      {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} text-center">
+                          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+                          </button>
+                          <strong>{{ message }}</strong>
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+            {% endwith %}
+                  {% block content %}{% endblock %}
+            <div class="row" id="search_manu" style="margin-top: 10px">
+                <form  action="{{ url_for('qsearch') }}" method="POST">
+                <div class="col-md-6 col-xs-12">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" placeholder="ВВедите название" class="form-control input-lg" id="inputGroup"
+                                name="searc"/>
+                                <span class="input-group-addon">
+                                    <button class="btn btn-default" type="submit" style="color:white">Поиск</button>
+                                </span>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-md-6 col-xs-12">
+
+                        <div class="form-group">
+                            <div class="">
+                                <select  style="font-size: 14px; background: #EAEAEA; border: none;"  placeholder="Select Medicine Type" size="1" class="input-lg form-control arrow-hide date_class" name="type">
+                                    <option value="" selected="selected">Выберите тип</option>
+                                    <option value="local">Отечественный</option>
+                                    <option value="generic">Зарубежный</option>
+
+                                </select>
+
+                            </div>
+                        </div>
+                </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="site_content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-sm-4 col-xs-12 left_sidebar1">
+                        <div id="left_part">
+                            <div class="bs-example">
+                                <div class="panel-group" id="accordion">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <div class="infoBoxHeading">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Категории</a>
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                    <i  id="accordan_plus" class="indicator glyphicon glyphicon-chevron-down  pull-right"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in">
+                                            <div class="panel-body">
+                                                <div class="infoBoxContents">
+                                                    <a href="{{ url_for('product', pur='Витамины') }}">Витамины </a><br />
+                                                    <a href="{{ url_for('product', pur='Аминокислоты') }}">Аминокислоты</a><br />
+                                                    <a href="{{ url_for('product', pur='Селен') }}">Селен</a><br />
+                                                    <a href="{{ url_for('product', pur='Обезболивающие') }}">Обезболивающие</a><br />
+                                                    <a href="{{ url_for('product', pur='Слабительное') }}">Слабительное</a><br />
+                                                    <a href="{{ url_for('product', pur='Противоаллергенные') }}">Противоаллергенные</a><br />
+                                                    <a href="{{ url_for('product', pur='Кат7') }}">Кат7</a><br />
+                                                    <a href="{{ url_for('product', pur='Кат8') }}">Кат8</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <div class="infoBoxHeading">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Избраное</a>
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                    <i id="accordan_plus" class="indicator glyphicon glyphicon-chevron-up  pull-right"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div id="collapseTwo" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="infoBoxContents">    
+                                                    <h4><a href="{{ url_for('favourites') }}">Избраное</a><br /></h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <script>
+                            function toggleChevron(e) {
+                                $(e.target)
+                                        .prev('.panel-heading')
+                                        .find("i.indicator")
+                                        .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+                            }
+                            $('#accordion').on('hidden.bs.collapse', toggleChevron);
+                            $('#accordion').on('shown.bs.collapse', toggleChevron);
+                        </script>
+
+                    </div> 
+                    <div class="col-md-9 col-sm-8 col-xs-12" id="content">            
+                        <div class="breadcrumbs">
+                            <a href="{{ url_for('mhome') }}"><i class="fa fa-home"></i></a>
+                            <a href="">{{ items[0] }}</a>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <ul class="thumbnails">
+                                    <li><a  href="#" class="thumbnail fix-box"><img class="changeimg" src="/static/images/img15.jpg"></a></li>
+
+                                </ul>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="btn-group">
+                                    <form action="{{ url_for('favourites') }}" method="post">
+                                    <input type="hidden" name="med_id" value="{{ items[7] }}">
+                                    <input type="hidden" name="med_role" value="{{ items[4] }}" />
+                                    <!-- <button  type="submit" id="demo" onclick="myFunction()" class="btn btn-primary wish_button"><i class="fa fa-heart"></i></button> -->
+                                    <button  title="" class="btn btn-default mr_5" id="demo" onclick="myFunction()" type="submit"><i class="fa fa-heart"></i></button>
+                                    <script>
+                                    function myFunction() {
+                                      document.getElementById("demo").style.color = "cyan";
+                                    }
+                                    </script>
+                                </form>
+
+                                </div>
+
+                                <h1 style="color: #39baf0">{{ items[0] }}</h1>
+                                <ul class="list-unstyled product-section">
+                                    <li><span>Изготовитель:</span> {{ items[1] }}</li>
+                                    <li><span>Категория:</span> {{ items[2] }}</li>
+                                    <li><span>Тип:</span> {{ items[4] }}</li>
+                                    <li><span>Остаток:</span> <span class="check-stock">{{ items[6] }} </span></li>
+                                </ul>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <h2>BYN {{ '%0.2f'| format(items[3]|float) }}</h2>
+                                    </li>
+                                    <li>НДС(20%): BYN {{ '%0.2f'| format(items[3]*0.2|float) }}</li>
+                                </ul>
+                                <div id="product">
+                                    <form action="{{ url_for('item') }}" method="POST">
+                                    <div class="form-group">
+                                        <label for="input-quantity" class="control-label">Qty</label>
+                                        <input type="number" class="form-control" id="input-quantity" size="2" value="1" name="quantity">
+                                        <input type="hidden" name="med_id" value="{{ items[7] }}">
+                                        <input type="hidden" name="med_role" value="{{ items[4] }}" />
+                                        <br>
+                                        <button class="btn btn-primary btn-lg btn-block reg_button" value="add" type="submit" >
+                                        Купить!
+                                        </button>
+                                    </div>
+                                </form>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a data-toggle="tab" href="#tab-description" aria-expanded="false">Описание</a></li>
+
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="tab-description" class="tab-pane active">
+                                        <div class="row ">
+                                            <p>T</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+            </div>
+        </div>
+
+        <div id="footer1">
+            <div class="container-fluid footer-background">
+                <div class="row">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-3 col-xs-12 txt-center">
+                                <a href="{{ url_for('mhome') }}">
+                                    <span class="logo-text">DRUGSTORE</span>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <a style="display: none" href="javascript:void(0);" class="scrollTop back-to-top" id="back-to-top">
+            <i class="fas fa-chevron-up"></i>
+        </a>
+    </body>
+</html> 
